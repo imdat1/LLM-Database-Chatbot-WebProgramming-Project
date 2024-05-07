@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Database</title>
+  <th:block th:insert="~{include.html}" />
+</head>
+<body>
+<th:block th:insert="~{header.html}" />
+
+<h1 th:unless="${database}">Add Database</h1>
+<h1 th:if="${database}">Edit Database</h1>
+<br>
+<form method="POST" th:action="@{'/add_database/{id}' (id=${database?.id})}">
+  <div class="container">
+    <div class="mb-3">
+      <label class="form-label" for="name">Your personal name:</label>
+      <input type="text" class="form-control" name="name" id="name" th:value="${database?.name}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="username">Username:</label>
+      <input type="text" class="form-control" name="username" id="username" th:value="${database?.username}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="password">Password:</label>
+      <input type="text" class="form-control" name="password" id="password" th:value="${database?.password}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="host">Host:</label>
+      <input type="text" class="form-control" name="host" id="host" th:value="${database?.host}">
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="databaseName">Database name:</label>
+      <input type="text" class="form-control" name="databaseName" id="databaseName" th:value="${database?.databaseName}">
+    </div>
+    <div class="mb-3" th:if="${noSuccess}">
+      <div class="alert alert-danger" role="alert">
+        There's something wrong in your database credentials. Please change and try again.
+      </div>
+    </div>
+    <div class="mb-3" th:if="${exception}">
+      <div class="alert alert-danger" role="alert" th:text="${exception}">
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.usebootstrap.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg" >
+    <a class="navbar-brand" href="/">
+        Home
+    </a>
+    <a href="/chat"> <span style="color: white">Chat with your Database!</span></a>
+    <a href="/admin/all_databases" sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;"> <span style="color: white">Admin All Databases</span></a>
+    <a href="/admin/all_users" sec:authorize="hasRole('ADMIN')" style="margin-left: 10px;"> <span style="color: white">Admin All Users</span></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-6">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbar-list-6">
+        <span style="margin-right:10px;color: white;" sec:authorize="isAuthenticated()">Welcome, <span style="color: #82ccdd" sec:authentication="name"></span>!</span>
+        <ul class="navbar-nav">
+            <a href="/login" style="margin-right: 10px" sec:authorize="!isAuthenticated()"> <li style="color: white">Login</li></a>
+            <a href="/register" style="margin-right: 10px" sec:authorize="!isAuthenticated()"> <li style="color: white">Register</li></a>
+            <a href="/view_profile" style="margin-right: 10px" sec:authorize="isAuthenticated()"> <li style="color: white">View Profile</li></a>
+            <a href="/logout" style="margin-right: 10px" sec:authorize="isAuthenticated()"> <li style="color: white">Logout</li></a>
+        </ul>
+    </div>
+</nav>
