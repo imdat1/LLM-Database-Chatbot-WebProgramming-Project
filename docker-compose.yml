@@ -34,6 +34,13 @@ services:
     networks:
       - chatbot_network
 
+  northwind:
+    image: bradymholt/postgres-northwind:latest
+    ports:
+      - "5434:5432"
+    networks:
+      - chatbot_network
+
 networks:
   chatbot_network:
     driver: bridge

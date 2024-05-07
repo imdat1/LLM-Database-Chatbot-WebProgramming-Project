@@ -10,3 +10,6 @@ Set the "HUGGINGFACE_API_TOKEN" in the "docker-compose.yml" file to a personal H
 Here are the default Admin User credentials:
 - Username: deannaste123
 - Password: 1234
+
+# Additional Information
+The Admin user has the testing database "Northwind" included.

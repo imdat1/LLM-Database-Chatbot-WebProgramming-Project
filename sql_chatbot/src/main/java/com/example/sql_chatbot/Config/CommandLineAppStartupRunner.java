@@ -3,6 +3,7 @@ package com.example.sql_chatbot.Config;
 import com.example.sql_chatbot.Models.User;
 import com.example.sql_chatbot.Models.enumerations.Role;
 import com.example.sql_chatbot.Repository.UserRepository;
+import com.example.sql_chatbot.Service.DatabaseService;
 import com.example.sql_chatbot.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +20,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Autowired
     UserService userService;
+    @Autowired
+    DatabaseService databaseService;
 
     @Override
     public void run(String...args) throws Exception {
@@ -27,10 +30,12 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
         try {
             if(!(admin.getUsername() != this.userService.findByUsername("deannaste123").getUsername())){
                 userRepository.save(admin);
+                this.databaseService.createDatabase("For testing", "northwind", "northwind","northwind:5432", "northwind", admin.getUsername());
             }
         }
         catch (UsernameNotFoundException exception){
             userRepository.save(admin);
+            this.databaseService.createDatabase("For testing", "northwind", "northwind","northwind:5432", "northwind", admin.getUsername());
         }
     }
 }
