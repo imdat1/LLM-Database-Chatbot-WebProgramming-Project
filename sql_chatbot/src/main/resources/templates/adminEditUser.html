@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Edit User</title>
+  <th:block th:insert="~{include.html}" />
+</head>
+<body>
+<th:block th:insert="~{header.html}" />
+
+<h1>Edit User</h1>
+
+<div class="container" xmlns:th="http://www.thymeleaf.org">
+  <h1 th:if="${hasError}" th:text="${error}"></h1>
+</div>
+<div class="container">
+  <form class="form-signin mt-xl-5" method="post" action="/admin/edit_user_credentials">
+    <p>
+      <label for="username" class="sr-only">Username</label>
+      <input type="text" id="username" name="username" class="form-control" placeholder="Username" required=""
+             autofocus="" th:value="${userErrorUsername} ?:''">
+    </p>
+    <label for="huggingFaceAPIToken" class="sr-only">huggingFaceAPIToken</label>
+    <input type="text" id="huggingFaceAPIToken" name="huggingFaceAPIToken" class="form-control" placeholder="huggingFaceAPIToken" required=""
+           autofocus="" th:value="${userErrorHuggingFace} ?:''" th:style="${huggingFaceTokenError} ? 'background: #ffd1d173;':''">
+    </p>
+    <p>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" name="role" type="radio" id="ROLE_ADMIN" value="ROLE_ADMIN" th:checked="${userRole} ? 'ROLE_ADMIN'">
+            <label class="form-check-label" for="ROLE_ADMIN">ROLE_ADMIN</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" name="role"  type="radio" id="ROLE_USER" value="ROLE_USER" th:checked="${userRole} ? 'ROLE_USER'">
+            <label class="form-check-label" for="ROLE_USER">ROLE_USER</label>
+          </div>
+    </p>
+    <div class="mb-3" th:if="${passwordError}">
+      <div class="alert alert-danger" role="alert" th:text="${passwordError}">
+      </div>
+    </div>
+    <div class="mb-3" th:if="${huggingFaceTokenError}">
+      <div class="alert alert-danger" role="alert" th:text="${huggingFaceTokenError}">
+      </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Edit User</button>
+  </form>
+</div>
+
+
+<h1>Edit User Password</h1>
+<div class="container">
+  <form class="form-signin mt-xl-5" method="post" action="/admin/edit_user_password">
+    <input type="hidden" name="username" th:value="${userErrorUsername} ?:''">
+    <p>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="password" name="password" class="form-control" placeholder="Password"
+             required="" th:style="${passwordError} ? 'background: #ffd1d173;':''">
+    </p>
+    <p>
+      <label for="repeatedPassword" class="sr-only">Repeat Password</label>
+      <input type="password" id="repeatedPassword" name="repeatedPassword" class="form-control"
+             placeholder="Repeat Password" required="">
+    </p>
+    </p>
+    <div class="mb-3" th:if="${passwordError}">
+      <div class="alert alert-danger" role="alert" th:text="${passwordError}">
+      </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Change Password</button>
+  </form>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.usebootstrap.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+
+</body>
+</html>

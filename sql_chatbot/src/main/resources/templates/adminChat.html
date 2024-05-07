@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Chat</title>
+  <th:block th:insert="~{include.html}" />
+</head>
+<body>
+<th:block th:insert="~{header.html}" />
+<h1>All questions for your selected database for user <span style="color: white;" th:text="${adminDatabase.user.getUsername()}"></span> with database username <span style="color: white;" th:text="${adminDatabase.getUsername()}"></span>.</h1>
+<a href="/admin/all_databases">Go back to Admin Databases</a>
+<br>
+<br>
+<table class="table table-striped">
+  <thead class="thead-dark">
+  <tr>
+    <th scope="col">Question</th>
+    <th scope="col">Answer</th>
+  </tr>
+  </thead>
+  <tbody style="background: white;" th:unless="${adminQuestions.isEmpty()}">
+  <tr th:each="question : ${adminQuestions}">
+    <td th:text="${question?.getQuestionText()}"></td>
+    <td th:text="${question?.getQuestionAnswer()}"></td>
+  </tr>
+  </tbody>
+  <tbody style="background: white;" th:if="${adminQuestions.isEmpty()}">
+  <tr>
+    <td>This user hasn't posted any questions for this database yet.</td>
+    <td></td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.usebootstrap.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Users</title>
+  <th:block th:insert="~{include.html}" />
+</head>
+<body>
+<th:block th:insert="~{header.html}" />
+<h1>All Users</h1>
+<br>
+<table class="table table-striped">
+  <thead class="thead-dark">
+  <tr>
+    <th scope="col">Username</th>
+    <th scope="col">Role</th>
+    <th scope="col"></th>
+    <th scope="col"></th>
+    <th scope="col"></th>
+    <th scope="col"></th>
+    <th scope="col">Is Account Locked</th>
+  </tr>
+  </thead>
+  <tbody style="background: white;">
+  <tr th:each="user : ${users}" th:if="${user?.getUsername()!=loggedInUser?.getUsername()}">
+    <td th:text="${user?.getUsername()}"></td>
+    <td th:text="${user?.getRole()}"></td>
+    <td>
+      <form th:action="@{'/admin/edit_user'}" method="post">
+        <input type="hidden" name="username" th:value="${user?.getUsername()}">
+        <a href="#" onclick="this.parentNode.submit()">Edit User</a>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/admin/delete_user'}" method="post">
+        <input type="hidden" name="username" th:value="${user?.getUsername()}">
+        <a href="#" onclick="this.parentNode.submit()">Delete User</a>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/admin/lock_user'}" method="post">
+        <input type="hidden" name="username" th:value="${user?.getUsername()}">
+        <a href="#" onclick="this.parentNode.submit()">Lock User</a>
+      </form>
+    </td>
+    <td>
+      <form th:action="@{'/admin/unlock_user'}" method="post">
+        <input type="hidden" name="username" th:value="${user?.getUsername()}">
+        <a href="#" onclick="this.parentNode.submit()">Unlock User</a>
+      </form>
+    </td>
+    <td th:text="${!user?.isAccountNonLocked()}"></td>
+  </tr>
+  </tbody>
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.usebootstrap.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+</body>
+</html>

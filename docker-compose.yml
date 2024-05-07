@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres_chatbot
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
+    ports:
+      - "5433:5432"
+    networks:
+      - chatbot_network
+
+  spring-boot-app:
+    build:
+      context: ./sql_chatbot
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      HUGGING_FACE_TOKEN: your_hugging_face_token_here
+    ports:
+      - "8080:8080"
+    networks:
+      - chatbot_network
+
+  flask-app:
+    build: ./flask_app
+    ports:
+      - "5000:5000"
+    networks:
+      - chatbot_network
+
+networks:
+  chatbot_network:
+    driver: bridge

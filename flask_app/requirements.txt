@@ -1,0 +1,13 @@
+pandas
+numpy
+flask 
+huggingface_hub
+langchain
+python-environ
+text-generation
+transformers
+google-search-results
+numexpr
+langchainhub
+sentencepiece
+jinja2

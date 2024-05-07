@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Admin Databases</title>
+    <th:block th:insert="~{include.html}" />
+</head>
+<body>
+<th:block th:insert="~{header.html}" />
+<h1>All databases by all users</h1>
+<br>
+<table class="table table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">User</th>
+        <th scope="col">Database Username</th>
+        <th scope="col">Database Host</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody style="background: white;">
+    <tr th:each="database : ${databases}">
+        <td th:text="${database?.user.getUsername()}"></td>
+        <td th:text="${database?.getUsername()}"></td>
+        <td th:text="${database?.getHost()}"></td>
+        <td>
+            <form th:action="@{'/admin/database_questions'}" method="post">
+                <input type="hidden" name="databaseId" th:value="${database?.id}">
+                <a href="#" onclick="this.parentNode.submit()">View database questions</a>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/admin/edit_database'}" method="post">
+                <input type="hidden" name="databaseId" th:value="${database?.id}">
+                <a href="#" onclick="this.parentNode.submit()">Edit Database</a>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{'/admin/delete_database/{id}' (id=${database?.id})}" method="post">
+                <a href="#" onclick="this.parentNode.submit()">Delete Database</a>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- JQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.usebootstrap.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript" src="/js/scripts.js"></script>
+</body>
+</html>
