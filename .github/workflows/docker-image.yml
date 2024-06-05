@@ -1,0 +1,50 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Build and push sql_chatbot Dockerfile
+        uses: docker/build-push-action@v5
+        with:
+          context: ./sql_chatbot
+          push: true
+          tags: |
+            imdat1/sql_chatbot:latest
+            imdat1/sql_chatbot:${{ github.run_number }}
+            imdat1/sql_chatbot:${{ github.run_number | add: 1 }}
+            # Add more versions as needed
+
+      - name: Build and push flask_app Dockerfile
+        uses: docker/build-push-action@v5
+        with:
+          context: ./flask_app
+          push: true
+          tags: |
+            imdat1/flask_app:latest
+            imdat1/flask_app:${{ github.run_number }}
+            imdat1/flask_app:${{ github.run_number | add: 1 }}
+            # Add more versions as needed
