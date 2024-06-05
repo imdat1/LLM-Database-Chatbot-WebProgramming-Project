@@ -7,7 +7,6 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build-and-push:
     runs-on: ubuntu-latest
     
@@ -35,7 +34,7 @@ jobs:
           tags: |
             imdat1/sql_chatbot:latest
             imdat1/sql_chatbot:${{ github.run_number }}
-            imdat1/sql_chatbot:${{ github.run_number | add: 1 }}
+            imdat1/sql_chatbot:${{ github.run_number }}-v0.1
             # Add more versions as needed
 
       - name: Build and push flask_app Dockerfile
@@ -46,5 +45,5 @@ jobs:
           tags: |
             imdat1/flask_app:latest
             imdat1/flask_app:${{ github.run_number }}
-            imdat1/flask_app:${{ github.run_number | add: 1 }}
+            imdat1/flask_app:${{ github.run_number }}-v0.1
             # Add more versions as needed
