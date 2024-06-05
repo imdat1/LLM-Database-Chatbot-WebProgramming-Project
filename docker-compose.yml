@@ -14,9 +14,8 @@ services:
       - chatbot_network
 
   spring-boot-app:
-    build:
-      context: ./sql_chatbot
-      dockerfile: Dockerfile
+    image: imdat1/sql_chatbot
+    container_name: spring_chatbot
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
@@ -30,7 +29,8 @@ services:
       - chatbot_network
 
   flask-app:
-    build: ./flask_app
+    image: imdat1/flask_app
+    container_name: flask_app
     ports:
       - "5000:5000"
     networks:
