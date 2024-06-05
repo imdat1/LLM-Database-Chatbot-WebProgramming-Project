@@ -15,7 +15,7 @@ services:
 
   spring-boot-app:
     image: imdat1/sql_chatbot
-    container_name: spring_chatbot
+    container_name: sql_chatbot
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
