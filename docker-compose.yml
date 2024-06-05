@@ -21,6 +21,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: password
+      FLASK_URL: http://flask-app:5000/ask
+      FLASK_URL2: http://flask-app:5000/connect
       HUGGING_FACE_TOKEN: your_hugging_face_token_here
     ports:
       - "8080:8080"
@@ -43,4 +45,5 @@ services:
 
 networks:
   chatbot_network:
+    name: chatbot_network
     driver: bridge

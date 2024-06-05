@@ -78,7 +78,6 @@ public class UserServiceImpl implements UserService {
         User user = this.userRepository.findByUsername(username).orElseThrow(()-> new UsernameNotFoundException(username));
 
         user.setHuggingFaceAPIToken(huggingFaceAPIToken);
-        user.setRole(role);
 
         return this.userRepository.save(user);
     }
