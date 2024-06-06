@@ -6,7 +6,7 @@ import com.example.sql_chatbot.Models.exceptions.PasswordsDoNotMatchException;
 import com.example.sql_chatbot.Service.DatabaseService;
 import com.example.sql_chatbot.Service.QuestionService;
 import com.example.sql_chatbot.Service.UserService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -50,47 +50,47 @@ public class UserController {
         return "viewProfile";
     }
     @PostMapping("/username_edited")
-    public String UsernameEdited(@AuthenticationPrincipal User user, @RequestParam String newUsername, Model model, HttpSession session){
+    public String UsernameEdited(@AuthenticationPrincipal User user, @RequestParam String newUsername, Model model, HttpServletRequest request){
         try {
             this.userService.findByUsername(newUsername);
         }
         catch (UsernameNotFoundException exception){
-            session.removeAttribute("sameUsernameError");
+            request.getSession().removeAttribute("sameUsernameError");
             user.setUsername(newUsername);
             this.userService.updateUser(user);
             model.addAttribute("user",user);
             return "redirect:/view_profile";
         }
-        session.setAttribute("sameUsernameError", "A user with this username already exists!");
+        request.getSession().setAttribute("sameUsernameError", "A user with this username already exists!");
         return "forward:/edit_username";
     }
     @PostMapping("/password_edited")
     public String PasswordEdited(@AuthenticationPrincipal User user, @RequestParam String newPassword,
                                  @RequestParam String newRepeatedPassword, Model model,
-                                 HttpSession session){
+                                 HttpServletRequest request){
         try {
             this.userService.updateUserPassword(user.getUsername(),newPassword,newRepeatedPassword);
         }
         catch (PasswordsDoNotMatchException exception){
             if (!registerController.isValidPassword(newPassword)){
-                session.setAttribute("passwordError", "Password must be at least 8 characters long, contain at least one uppercase letter, and have at least one symbol (!@#$%^&*)");
+                request.getSession().setAttribute("passwordError", "Password must be at least 8 characters long, contain at least one uppercase letter, and have at least one symbol (!@#$%^&*)");
             }
             else {
-                session.removeAttribute("passwordError");
+                request.getSession().removeAttribute("passwordError");
             }
-            session.setAttribute("exception", exception.getMessage());
+            request.getSession().setAttribute("exception", exception.getMessage());
             return "forward:/edit_password";
         }
 
         if(registerController.isValidPassword(newPassword)){
-            session.removeAttribute("exception");
-            session.removeAttribute("passwordError");
+            request.getSession().removeAttribute("exception");
+            request.getSession().removeAttribute("passwordError");
             model.addAttribute("user",user);
             return "redirect:/view_profile";
         }
         else {
-            session.removeAttribute("exception");
-            session.setAttribute("passwordError", "Password must be at least 8 characters long, contain at least one uppercase letter, and have at least one symbol (!@#$%^&*)");
+            request.getSession().removeAttribute("exception");
+            request.getSession().setAttribute("passwordError", "Password must be at least 8 characters long, contain at least one uppercase letter, and have at least one symbol (!@#$%^&*)");
             return "forward:/edit_password";
         }
     }
@@ -103,13 +103,13 @@ public class UserController {
     }
 
     @PostMapping("/huggingfacetoken_edited")
-    public String HuggingFaceTokenEdited(@AuthenticationPrincipal User user, Model model, @RequestParam String newHuggingFaceToken, HttpSession session){
+    public String HuggingFaceTokenEdited(@AuthenticationPrincipal User user, Model model, @RequestParam String newHuggingFaceToken, HttpServletRequest request){
 
         if(!registerController.isValidHuggingFaceToken(newHuggingFaceToken)){
-            session.setAttribute("huggingFaceTokenError", "Your HuggingFace API Token is Invalid!");
+            request.getSession().setAttribute("huggingFaceTokenError", "Your HuggingFace API Token is Invalid!");
             return "forward:/edit_huggingfacetoken";
         };
-        session.removeAttribute("huggingFaceTokenError");
+        request.getSession().removeAttribute("huggingFaceTokenError");
         model.addAttribute("user", user);
         this.userService.updateUserCredentials(user.getUsername(), newHuggingFaceToken, Role.ROLE_USER);
         return "viewProfile";

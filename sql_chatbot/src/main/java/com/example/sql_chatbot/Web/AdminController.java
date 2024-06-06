@@ -10,7 +10,7 @@ import com.example.sql_chatbot.Models.exceptions.UsernameAlreadyExistsException;
 import com.example.sql_chatbot.Service.DatabaseService;
 import com.example.sql_chatbot.Service.QuestionService;
 import com.example.sql_chatbot.Service.UserService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,8 +45,8 @@ public class AdminController {
     }
 
     @GetMapping("/database_questions")
-    public String GetDatabaseQuestions(HttpSession session, Model model){
-        Database database= (Database) session.getAttribute("adminDatabase");
+    public String GetDatabaseQuestions(HttpServletRequest request, Model model){
+        Database database= (Database) request.getSession().getAttribute("adminDatabase");
         List<Question> questions = this.questionService.findAllForDatabase(database.getId());
 
         model.addAttribute("adminDatabase", database);
@@ -63,14 +63,14 @@ public class AdminController {
     }
 
     @GetMapping("/edit_user")
-    public String EditUser(@RequestParam(required = false) String error, HttpSession session, Model model){
+    public String EditUser(@RequestParam(required = false) String error, HttpServletRequest request, Model model){
 
         if(error != null && !error.isEmpty()) {
             model.addAttribute("hasError", true);
             model.addAttribute("error", error);
         }
 
-        User user = (User) session.getAttribute("userForEditing");
+        User user = (User) request.getSession().getAttribute("userForEditing");
         model.addAttribute("userErrorUsername",user.getUsername());
         model.addAttribute("userErrorHuggingFace",user.getHuggingFaceAPIToken());
         model.addAttribute("userErrorPassword",user.getPassword());
@@ -80,23 +80,23 @@ public class AdminController {
     }
 
     @PostMapping("/database_questions")
-    public String DatabaseQuestions(HttpSession session, @RequestParam Long databaseId) {
+    public String DatabaseQuestions(HttpServletRequest request, @RequestParam Long databaseId) {
         if (databaseId == null) {
             return "databaseNotFound";
         }
         Database database = this.databaseService.getDatabaseById(databaseId);
 
-        session.setAttribute("adminDatabase", database);
+        request.getSession().setAttribute("adminDatabase", database);
         return "redirect:/admin/database_questions";
     }
     @PostMapping("/edit_database")
-    public String DatabaseEdit(HttpSession session, @RequestParam Long databaseId) {
+    public String DatabaseEdit(HttpServletRequest request, @RequestParam Long databaseId) {
         if (databaseId == null) {
             return "databaseNotFound";
         }
 
         Database database = this.databaseService.getDatabaseById(databaseId);
-        session.setAttribute("selectedDatabase", database);
+        request.getSession().setAttribute("selectedDatabase", database);
 
         return "redirect:/edit_database?adminEditing=1";
     }
@@ -115,9 +115,9 @@ public class AdminController {
     }
 
     @PostMapping("/edit_user")
-    public String EditUser(@RequestParam String username, HttpSession session){
+    public String EditUser(@RequestParam String username, HttpServletRequest request){
         User user = this.userService.findByUsername(username);
-        session.setAttribute("userForEditing", user);
+        request.getSession().setAttribute("userForEditing", user);
         return "redirect:/admin/edit_user";
     }
 
@@ -125,7 +125,7 @@ public class AdminController {
     public String EditUserCredentials(@RequestParam String username,
                              @RequestParam String huggingFaceAPIToken,
                              @RequestParam Role role,
-                             HttpSession session,
+                                      HttpServletRequest request,
                              Model model){
 
         try{
@@ -137,7 +137,7 @@ public class AdminController {
             }
 
 
-            User user = (User) session.getAttribute("userForEditing");
+            User user = (User) request.getSession().getAttribute("userForEditing");
             this.userService.updateUsername(user.getUsername(),username);
             this.userService.updateUserCredentials(username,huggingFaceAPIToken,role);
 

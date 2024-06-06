@@ -5,7 +5,7 @@ import com.example.sql_chatbot.Models.User;
 import com.example.sql_chatbot.Service.DatabaseService;
 import com.example.sql_chatbot.Service.QuestionService;
 import com.example.sql_chatbot.Models.Database;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -47,21 +47,21 @@ public class QuestionController {
     private String FLASK_URL;
 
     @PostMapping("/chat/selectDatabase")
-    public String selectDatabase(HttpSession session, @RequestParam Long databaseId, Model model) {
+    public String selectDatabase(HttpServletRequest request, @RequestParam Long databaseId, Model model) {
         Database selectedDatabase = this.databaseService.getDatabaseById(databaseId);
         if (selectedDatabase == null) {
             return "databaseNotFound";
         }
         Long isDatabase= databaseId;
-        session.setAttribute("selectedDatabase", selectedDatabase);
+        request.getSession().setAttribute("selectedDatabase", selectedDatabase);
         return "redirect:/chat";
     }
 
     @PostMapping("/ask_question")
     public String postQuestion(@RequestParam String question,
                                @AuthenticationPrincipal User user,
-                               HttpSession session) throws JSONException {
-        Database database = (Database) session.getAttribute("selectedDatabase");
+                               HttpServletRequest request) throws JSONException {
+        Database database = (Database) request.getSession().getAttribute("selectedDatabase");
 
 
         String username = database.getUsername();
@@ -102,11 +102,11 @@ public class QuestionController {
 
     @GetMapping("/chat")
     public String getDataBases(Model model,
-                               HttpSession session,
+                               HttpServletRequest request,
                                @AuthenticationPrincipal User user,
                                @RequestParam(required = false) Integer firstAnswer) {
         List<Database> databases = databaseService.findAllForUser(user.getUsername());
-        Database selectedDatabase = (Database) session.getAttribute("selectedDatabase");
+        Database selectedDatabase = (Database) request.getSession().getAttribute("selectedDatabase");
         List<Question> questions = new ArrayList<>();
         if(selectedDatabase!=null){
             questions = questionService.findAllForDatabase(selectedDatabase.getId());

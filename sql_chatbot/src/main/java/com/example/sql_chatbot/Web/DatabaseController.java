@@ -5,7 +5,7 @@ import com.example.sql_chatbot.Models.Question;
 import com.example.sql_chatbot.Models.User;
 import com.example.sql_chatbot.Service.DatabaseService;
 import com.example.sql_chatbot.Service.UserService;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 import org.hibernate.NonUniqueResultException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,12 +60,12 @@ public class DatabaseController {
                               @RequestParam String databaseName,
                               @AuthenticationPrincipal User user,
                               Model model,
-                              HttpSession session) throws JSONException {
+                              HttpServletRequest request) throws JSONException {
             String status = checkDatabaseCredentials(username,password,host,databaseName);
 
             if ("success".equals(status)) {
                 Database database = databaseService.createDatabase(name, username, password, host, databaseName, user.getUsername());
-                session.setAttribute("selectedDatabase", database);
+                request.getSession().setAttribute("selectedDatabase", database);
                 return "redirect:/chat";
             } else {
                 Database database = new Database(name, username, password, host, databaseName, user);
@@ -78,14 +78,14 @@ public class DatabaseController {
     }
 
     @GetMapping("/edit_database")
-    public String editDatabase(Model model, HttpSession session, @RequestParam(required = false) Long adminEditing){
-        Database database = (Database) session.getAttribute("selectedDatabase");
-        session.setAttribute("adminEditing",adminEditing);
+    public String editDatabase(Model model, HttpServletRequest request, @RequestParam(required = false) Long adminEditing){
+        Database database = (Database) request.getSession().getAttribute("selectedDatabase");
+        request.getSession().setAttribute("adminEditing",adminEditing);
         model.addAttribute("database", database);
 
-        Boolean noSuccess = (Boolean) session.getAttribute("noSuccessAdmin");
+        Boolean noSuccess = (Boolean) request.getSession().getAttribute("noSuccessAdmin");
         if(noSuccess!=null){
-            session.removeAttribute("noSuccessAdmin");
+            request.getSession().removeAttribute("noSuccessAdmin");
             noSuccess = true;
         }
 
@@ -101,20 +101,20 @@ public class DatabaseController {
                                @RequestParam String host,
                                @RequestParam String databaseName,
                                @AuthenticationPrincipal User user,
-                               HttpSession session) throws JSONException{
-        Long adminEditing = (Long) session.getAttribute("adminEditing");
+                               HttpServletRequest request) throws JSONException{
+        Long adminEditing = (Long) request.getSession().getAttribute("adminEditing");
         if(adminEditing!=null){
             Database database = this.databaseService.getDatabaseById(id);
             String databaseUsername = database.getUser().getUsername();
             String status = checkDatabaseCredentials(username,password,host,databaseName);
             if ("success".equals(status)) {
                 this.databaseService.update(id, name, username, password, host, databaseName, databaseUsername);
-                session.removeAttribute("selectedDatabase");
-                session.removeAttribute("adminEditing");
+                request.getSession().removeAttribute("selectedDatabase");
+                request.getSession().removeAttribute("adminEditing");
                 return "redirect:/admin/all_databases";
             } else {
                 boolean noSuccess = true;
-                session.setAttribute("noSuccessAdmin", noSuccess);
+                request.getSession().setAttribute("noSuccessAdmin", noSuccess);
                 return "redirect:/edit_database?adminEditing=1";
             }
         }
@@ -123,18 +123,18 @@ public class DatabaseController {
         if("success".equals(status)){
             this.databaseService.update(id, name, username, password, host, databaseName, user.getUsername());
             Database database = this.databaseService.getDatabaseById(id);
-            session.setAttribute("selectedDatabase", database);
+            request.getSession().setAttribute("selectedDatabase", database);
             return "redirect:/chat";
         }
         boolean noSuccess = true;
-        session.setAttribute("noSuccessAdmin", noSuccess);
+        request.getSession().setAttribute("noSuccessAdmin", noSuccess);
         return "redirect:/edit_database";
     }
 
     @PostMapping("/delete_database/{id}")
-    public String deleteDatabase(@PathVariable Long id, HttpSession session){
+    public String deleteDatabase(@PathVariable Long id, HttpServletRequest request){
 
-        session.removeAttribute("selectedDatabase");
+        request.getSession().removeAttribute("selectedDatabase");
         this.databaseService.deleteDatabase(id);
         return "redirect:/chat";
     }
