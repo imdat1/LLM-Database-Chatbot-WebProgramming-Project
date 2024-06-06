@@ -2,11 +2,13 @@ package com.example.sql_chatbot.Models;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "databases")
-public class Database {
+public class Database implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
