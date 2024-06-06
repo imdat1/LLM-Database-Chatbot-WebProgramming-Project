@@ -23,6 +23,8 @@ services:
       FLASK_URL: http://flask-app:5000/ask
       FLASK_URL2: http://flask-app:5000/connect
       HUGGING_FACE_TOKEN: your_hugging_face_token_here
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
     ports:
       - "8080:8080"
     networks:
@@ -40,6 +42,14 @@ services:
     image: bradymholt/postgres-northwind:latest
     ports:
       - "5434:5432"
+    networks:
+      - chatbot_network
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
     networks:
       - chatbot_network
 
