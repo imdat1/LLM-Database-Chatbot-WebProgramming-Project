@@ -1,0 +1,61 @@
+# spring-boot-app-manifest.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-boot-config
+  namespace: database-namespace
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+  SPRING_DATASOURCE_USERNAME: postgres
+  SPRING_DATASOURCE_PASSWORD: password
+  FLASK_URL: http://flask-app:5000/ask
+  FLASK_URL2: http://flask-app:5000/connect
+  HUGGING_FACE_TOKEN: your_hugging_face_token_here
+  SPRING_DATA_REDIS_CONNECTION_HOST: redis
+  SPRING_DATA_REDIS_CONNECTION_PORT: "6379"
+  SPRING_SESSION_STORE_TYPE: redis
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-app
+  namespace: database-namespace
+  labels:
+    app: spring-boot-app
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: spring-boot-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: spring-boot-app
+    spec:
+      containers:
+      - name: spring-boot-app
+        image: imdat1/sql_chatbot
+        envFrom:
+        - configMapRef:
+            name: spring-boot-config
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-app
+  namespace: database-namespace
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: spring-boot-app
