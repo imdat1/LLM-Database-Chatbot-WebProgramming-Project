@@ -12,7 +12,15 @@ services:
       - "5433:5432"
     networks:
       - chatbot_network
-
+      
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - chatbot_network
+      
   spring-boot-app:
     image: imdat1/sql_chatbot
     container_name: sql_chatbot
@@ -42,14 +50,6 @@ services:
     image: bradymholt/postgres-northwind:latest
     ports:
       - "5434:5432"
-    networks:
-      - chatbot_network
-
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - "6379:6379"
     networks:
       - chatbot_network
 
